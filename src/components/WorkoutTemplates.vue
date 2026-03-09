@@ -56,28 +56,28 @@
 
     // Состояние формы
     const newTemplate = ref({
-    name: '',
-    exercises: []
+      name: '',
+      exercises: []
     });
 
     // Хранилище (пока в памяти)
     const templates = ref([]);
 
     const addExercise = () => {
-    newTemplate.value.exercises.push({ name: '', sets: 3, weight: 0, restTime: 90 });
+      newTemplate.value.exercises.push({ name: '', sets: '', weight: '', restTime: '' });
     };
 
     const removeExercise = (index) => {
-    newTemplate.value.exercises.splice(index, 1);
+      newTemplate.value.exercises.splice(index, 1);
     };
 
     const saveTemplate = () => {
-    if (!newTemplate.value.name || !newTemplate.value.exercises.length) {
+      if (!newTemplate.value.name || !newTemplate.value.exercises.length) {
         alert('Заполните название и добавьте упражнения');
         return;
-    }
-    // Сохраняем копию и очищаем форму
-    templates.value.push({ ...newTemplate.value, id: Date.now() });
-    newTemplate.value = { name: '', exercises: [] };
+      }
+      // Сохраняем копию и очищаем форму
+      templates.value.push({ ...newTemplate.value, id: Date.now() });
+      newTemplate.value = { name: '', exercises: [] };
     };
 </script>

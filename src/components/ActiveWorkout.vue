@@ -46,15 +46,15 @@
     // Инициализация сессии на основе шаблона
     // Мы создаем новую структуру данных, добавляя поля состояния (done, restActive)
     const session = ref({
-    exercises: props.template.exercises.map(ex => ({
+      exercises: props.template.exercises.map(ex => ({
         ...ex,
         sets: Array.from({ length: ex.sets }, (_, i) => ({
-        id: `${ex.name}-${i}-${Date.now()}`, // Уникальный ID для каждого подхода
-        done: false,
-        restActive: false,
-        restLeft: ex.restTime
+          id: `${ex.name}-${i}-${Date.now()}`, // Уникальный ID для каждого подхода
+          done: false,
+          restActive: false,
+          restLeft: ex.restTime
         }))
-    }))
+      }))
     });
 
     const totalTime = ref(0);
@@ -65,60 +65,62 @@
     onMounted(() => {
     sessionTimer = setInterval(() => {
         totalTime.value++;
-    }, 1000);
+      }, 1000);
     });
 
     // Очистка всех таймеров при уходе со страницы
     onUnmounted(() => {
-    clearInterval(sessionTimer);
-    Object.values(restTimers).forEach(id => clearInterval(id));
+      clearInterval(sessionTimer);
+      Object.values(restTimers).forEach(id => clearInterval(id));
     });
 
     const formatTime = (seconds) => {
-    const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-    const s = (seconds % 60).toString().padStart(2, '0');
-    return `${m}:${s}`;
+      const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const s = (seconds % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
     };
 
     const toggleSet = (exIndex, setIndex) => {
-    const set = session.value.exercises[exIndex].sets[setIndex];
-    const exercise = session.value.exercises[exIndex];
+      const set = session.value.exercises[exIndex].sets[setIndex];
+      const exercise = session.value.exercises[exIndex];
 
-    if (!set.done) {
+      if (!set.done) {
         // Начинаем подход
         set.done = true;
         startRestTimer(set, exercise.restTime);
-    } else {
+      } 
+      else {
         // Отменяем подход
         set.done = false;
         stopRestTimer(set);
-    }
+      }
     };
 
     const startRestTimer = (set, duration) => {
-    set.restActive = true;
-    set.restLeft = duration;
+      set.restActive = true;
+      set.restLeft = duration;
 
-    const timerId = setInterval(() => {
+      const timerId = setInterval(() => {
         if (set.restLeft > 0) {
-        set.restLeft--;
-        } else {
-        // Время вышло
-        clearInterval(timerId);
-        set.restActive = false;
-        // В реальном приложении тут был бы звук
-        alert('Время отдыха вышло!'); 
+          set.restLeft--;
+        } 
+        else {
+          // Время вышло
+          clearInterval(timerId);
+          set.restActive = false;
+          // В реальном приложении тут был бы звук
+          alert('Время отдыха вышло!'); 
         }
-    }, 1000);
+      }, 1000);
 
-    restTimers[set.id] = timerId;
+      restTimers[set.id] = timerId;
     };
 
     const stopRestTimer = (set) => {
-    set.restActive = false;
-    if (restTimers[set.id]) {
-        clearInterval(restTimers[set.id]);
-        delete restTimers[set.id];
-    }
+      set.restActive = false;
+      if (restTimers[set.id]) {
+          clearInterval(restTimers[set.id]);
+          delete restTimers[set.id];
+      }
     };
 </script>
